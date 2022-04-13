@@ -10,7 +10,7 @@ builds:
       - linux
     goarch:
       - amd64
-    binary: jkstrustinit
+    binary: p12trustinit
     main: ./main.go
 archives:
   - name_template: "{{ .Binary }}-{{ .Tag }}-{{ .Os }}-{{ .Arch }}"
@@ -27,8 +27,8 @@ release:
   prerelease: auto
 dockers:
   - image_templates:
-      - "gavinmcnair/jkstrustinit:latest"
-      - "gavinmcnair/jkstrustinit:{{ .Tag }}"
+      - "gavinmcnair/p12trustinit:latest"
+      - "gavinmcnair/p12trustinit:{{ .Tag }}"
     dockerfile: Dockerfile.goreleaser # Use a separate docker file for goreleaser
     build_flag_templates:
       - "--label=org.opencontainers.image.created={{.Date}}"
