@@ -1,16 +1,16 @@
-# jksTrustInit
+# p12TrustInit
 
 ![GitHub](https://img.shields.io/github/license/gavinmcnair/p12trustinit)
 [![Powered By: GoReleaser](https://img.shields.io/badge/powered%20by-goreleaser-green.svg)](https://github.com/goreleaser)
 ![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/gavinmcnair/p12trustinit)
-![CircleCI](https://img.shields.io/circleci/build/github/gavinmcnair/jksTrustInit/main?token=aab7daba901f49034a2fb9f61895b61114b13de9)
+![CircleCI](https://img.shields.io/circleci/build/github/gavinmcnair/p12TrustInit/main?token=aab7daba901f49034a2fb9f61895b61114b13de9)
 
 
 ## Problem statement
 
 Do you have a Java application which uses a `JKS` file but you only have a standard pem encoded Key and Certificate?
 
-jksTrustInit is an `initContainer` which takes certificates from either local files or environment variables and writes out a Java Keystore (JKS) file to an emptyDir which can be shared with the main container
+p12TrustInit is an `initContainer` which takes certificates from either local files or environment variables and writes out a Java Keystore (JKS) file to an emptyDir which can be shared with the main container
 
 | Environment Variable  | Default  | Description  |
 |---|---|---|
@@ -20,7 +20,7 @@ jksTrustInit is an `initContainer` which takes certificates from either local fi
 | CERTIFICATE  |  NA | Certificate environment variable  |
 | KEY_FILE  |  NA |  Public Key file |
 | CERTIFICATE_FILE  | NA  | Certificate file  |
-| OUTPUT_FILE  | /var/run/secrets/truststore.jks  | The filename used to write the file out |
+| OUTPUT_FILE  | /var/run/secrets/truststore.p12  | The filename used to write the file out |
 
 ## How to use in Kubernetes
 
@@ -39,7 +39,7 @@ metadata:
   name: KafkaClient
 spec:
   initContainers:
-    - name: jksTrustInit
+    - name: p12TrustInit
       image: gavinmcnair/p12trustinit:v1.0.4
       env:
         - name: KEY
@@ -54,7 +54,7 @@ spec:
       image: kafkaclient:1.0.0
       env:
         - name: JAVA_JKS_FILE
-          value: "/var/run/secrets/truststore.jks"
+          value: "/var/run/secrets/truststore.p12"
         - name: JAVA_JKS_PASSWORD
           value: "password"
       volumeMounts:
