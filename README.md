@@ -40,7 +40,7 @@ metadata:
 spec:
   initContainers:
     - name: p12TrustInit
-      image: gavinmcnair/p12trustinit:v1.0.4
+      image: gavinmcnair/p12trustinit:v1.0.3
       env:
         - name: KEY
           value: "pem encoded key"
