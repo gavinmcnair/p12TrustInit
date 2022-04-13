@@ -15,6 +15,7 @@ import (
 )
 
 type config struct {
+	Password        string `env:"PASSWORD" envDefault:"password"`
 	Mode            bool   `env:"FILE_MODE" envDefault:false`
 	Key             string `env:"KEY"`
 	Certificate     string `env:"CERTIFICATE"`
@@ -48,6 +49,8 @@ func run() error {
 		certificate = cfg.Certificate
 	}
 
+
+
 	pemPrivateKey, err := readPem("PRIVATE KEY", key)
 	if err != nil {
 		return err
@@ -58,22 +61,26 @@ func run() error {
 		return err
 	}
 
- cert, err := x509.ParseCertificate(pemCertificate)
+	crt, err := x509.ParseCertificate(pemCertificate)
+	if err != nil {
+         panic(err)
+	}
 
-    if err != nil {
-        panic(err)
-    }
+	priKey, err := x509.ParsePKCS8PrivateKey(pemPrivateKey)
+	if err != nil {
+         return err
+	}
 
-	pfxBytes, err := pkcs12.Encode(rand.Reader, pemPrivateKey, cert, []*x509.Certificate{}, pkcs12.DefaultPassword)
+    pfxBytes, err := pkcs12.Encode(rand.Reader, priKey, crt, nil, cfg.Password)
 
-    if err != nil {
-        panic(err)
-    }
+	if err != nil {
+         return err
+	}
 
     // validate output
-    _, _, _, err = pkcs12.DecodeChain(pfxBytes, pkcs12.DefaultPassword)
+    _, _, _, err = pkcs12.DecodeChain(pfxBytes, cfg.Password)
     if err != nil {
-        panic(err)
+        return(err)
     }
 
 	// write output
@@ -82,7 +89,7 @@ func run() error {
         pfxBytes,
         os.ModePerm,
     ); err != nil {
-        panic(err)
+        return(err)
     }
 
 	return nil
